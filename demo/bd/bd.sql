@@ -1,0 +1,12 @@
+create table card(
+    -> id INT AUTO_INCREMENT PRIMARY KEY,
+    -> cardNumber LONG NOT NULL,
+    -> holderName VARCHAR(200) NOT NULL,
+    -> issuedAt DATE NOT NULL,
+    -> expiresAt DATE NOT NULL,
+    -> status Varchar(50),
+    -> blockedAt DATE NOT NULL,
+    -> blockedReason VARCHAR(200) ,
+    -> balance DOUBLE not null,
+    -> currency VARCHAR(10) NOT NULL
+    -> );
