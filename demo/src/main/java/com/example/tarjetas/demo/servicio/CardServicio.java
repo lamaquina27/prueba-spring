@@ -13,6 +13,7 @@ import com.example.tarjetas.demo.dto.CardDtoActivate;
 import com.example.tarjetas.demo.dto.CardDtoBlock;
 import com.example.tarjetas.demo.dto.CardDtoCreacion;
 import com.example.tarjetas.demo.dto.CardDtoGet;
+import com.example.tarjetas.demo.dto.CardRequest;
 import com.example.tarjetas.demo.entity.Card;
 import com.example.tarjetas.demo.mappers.CardMapper;
 import com.example.tarjetas.demo.repositorio.CardRepository;
@@ -25,18 +26,17 @@ public class CardServicio {
 
 
 
-    public CardDtoCreacion  creacion(HashMap<String,String> request ){
-        Card nuevo = new Card();
+    public CardDtoCreacion  creacion(CardRequest card){
+        Card nuevo = CardMapper.toEntity(card);
         nuevo.setBalance(0.00);
         nuevo.setCurrency("USD");
         nuevo.setBlockedAt(null);
         nuevo.setStatus("ISSUED");
         nuevo.setIssuedAt(LocalDate.now());
-        nuevo.setHolderName(request.get("holderName"));
         nuevo.setExpiresAt(nuevo.getIssuedAt().plusYears(3));
         Random r = new Random();
         Long l = 1_000_000_000L + (long)(r.nextDouble() * 9_000_000_000L);
-        nuevo.setCardNumber(request.get("productId")+Long.toString(l));
+        nuevo.setCardNumber(card.getId()+Long.toString(l));
 
 
         Card insertado = repo.save(nuevo);

@@ -4,6 +4,7 @@ import com.example.tarjetas.demo.dto.CardDtoActivate;
 import com.example.tarjetas.demo.dto.CardDtoBlock;
 import com.example.tarjetas.demo.dto.CardDtoCreacion;
 import com.example.tarjetas.demo.dto.CardDtoGet;
+import com.example.tarjetas.demo.dto.CardRequest;
 import com.example.tarjetas.demo.entity.Card;
 
 public class CardMapper {
@@ -21,13 +22,10 @@ public class CardMapper {
     public static CardDtoGet toDtoGet(Card card){
         return new CardDtoGet(card.getId(), card.getCardNumber(), card.getHolderName(),card.getStatus(),card.getBlockedAt(),card.getBlockedReason(), card.getExpiresAt(), card.getBalance(), card.getCurrency());
     }
-    public static Card toEntity(CardDtoCreacion dto){
+    public static Card toEntity(CardRequest dto){
         Card card = new Card();
         card.setId(dto.getId());
-        card.setCardNumber(dto.getCardNumber());
-        card.setExpiresAt(dto.getExpiresAt());
-        card.setBalance(dto.getBalance());
-        card.setCurrency(dto.getCurrency());
+        card.setHolderName(dto.getHolderName());
         return card;
     }
 }
