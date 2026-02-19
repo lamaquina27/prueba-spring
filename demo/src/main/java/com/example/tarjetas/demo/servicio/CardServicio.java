@@ -2,7 +2,6 @@ package com.example.tarjetas.demo.servicio;
 import java.util.Random;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;

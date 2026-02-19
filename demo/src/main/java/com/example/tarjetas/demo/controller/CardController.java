@@ -7,6 +7,7 @@ import com.example.tarjetas.demo.dto.CardDtoActivate;
 import com.example.tarjetas.demo.dto.CardDtoBlock;
 import com.example.tarjetas.demo.dto.CardDtoCreacion;
 import com.example.tarjetas.demo.dto.CardDtoGet;
+import com.example.tarjetas.demo.dto.CardRequest;
 import com.example.tarjetas.demo.servicio.CardServicio;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,7 @@ public class CardController {
         return body;
     }
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<CardDtoCreacion> creacionCard(@RequestBody HashMap<String,String> card) {
+    public ResponseEntity<CardDtoCreacion> creacionCard(@RequestBody CardRequest card) {
         
         return ResponseEntity.ok(servicio.creacion(card));
     }
