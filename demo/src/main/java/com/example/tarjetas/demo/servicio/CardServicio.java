@@ -1,11 +1,18 @@
 package com.example.tarjetas.demo.servicio;
+import java.util.Random;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.example.tarjetas.demo.dto.CardDto;
+import com.example.tarjetas.demo.dto.CardDtoActivate;
+import com.example.tarjetas.demo.dto.CardDtoBlock;
+import com.example.tarjetas.demo.dto.CardDtoCreacion;
+import com.example.tarjetas.demo.dto.CardDtoGet;
 import com.example.tarjetas.demo.entity.Card;
 import com.example.tarjetas.demo.mappers.CardMapper;
 import com.example.tarjetas.demo.repositorio.CardRepository;
@@ -18,46 +25,56 @@ public class CardServicio {
 
 
 
-    public CardDto creacion(HashMap<String,Object> request ){
+    public CardDtoCreacion  creacion(HashMap<String,String> request ){
         Card nuevo = new Card();
         nuevo.setBalance(0.00);
         nuevo.setCurrency("USD");
-        nuevo.setId(Long.parseLong((String) request. get("productId")));
         nuevo.setBlockedAt(null);
         nuevo.setStatus("ISSUED");
-        nuevo.setCardNumber(null);
+        nuevo.setIssuedAt(LocalDate.now());
+        nuevo.setHolderName(request.get("holderName"));
+        nuevo.setExpiresAt(nuevo.getIssuedAt().plusYears(3));
+        Random r = new Random();
+        Long l = 1_000_000_000L + (long)(r.nextDouble() * 9_000_000_000L);
+        nuevo.setCardNumber(request.get("productId")+Long.toString(l));
 
 
         Card insertado = repo.save(nuevo);
-        return CardMapper.toDto(insertado);
+        return CardMapper.toDtoCreacion(insertado);
     }
 
-    public CardDto activacion(Long id){
-        Card card = repo.findById(id).orElse(null);
+    public CardDtoActivate activacion(Long id){
+        Card card = repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404)));
         if(card.getStatus().equalsIgnoreCase("ISSUED")){
             card.setStatus("ACTIVATE");
             Card actualizada = repo.save(card);
-            return CardMapper.toDto(actualizada);
+            return CardMapper.toDtoActivacion(actualizada);
+        }else if(card.getStatus().equalsIgnoreCase("ACTIVATE")){
+            throw new ResponseStatusException(HttpStatusCode.valueOf(200));
         }else{
-            return  null;
+            throw new ResponseStatusException(HttpStatusCode.valueOf(409));
         }
+        
         
     }
 
-    public CardDto bloquear(Long id,String reason){
-        Card card = repo.findById(id).orElse(null);
+    public CardDtoBlock bloquear(Long id,String reason){
+        Card card = repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404)));
         if(!card.getStatus().equalsIgnoreCase("BLOCKED")){
+            
+
             card.setBlockedReason(reason);
-            card.setBlockedAt(null);
+            card.setBlockedAt(LocalDate.now());  // ✅ Fecha actual
+            card.setStatus("BLOCKED");   
             Card actualizada = repo.save(card);
-            return CardMapper.toDto(actualizada);
+            return CardMapper.toDtoBlock(actualizada);
         }else{
-            return  null;
+            throw new ResponseStatusException(HttpStatusCode.valueOf(200));
         }
     }
-    public CardDto buscar(Long id){
-        Card card = repo.findById(id).orElse(null);
-        return (card != null) ? CardMapper.toDto(card) : null;
+    public CardDtoGet buscar(Long id){
+        Card card = repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404)));
+        return CardMapper.toDtoGet(card);
     }
     
 

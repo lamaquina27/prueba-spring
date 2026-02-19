@@ -1,24 +1,31 @@
 package com.example.tarjetas.demo.mappers;
 
-import com.example.tarjetas.demo.dto.CardDto;
+import com.example.tarjetas.demo.dto.CardDtoActivate;
+import com.example.tarjetas.demo.dto.CardDtoBlock;
+import com.example.tarjetas.demo.dto.CardDtoCreacion;
+import com.example.tarjetas.demo.dto.CardDtoGet;
 import com.example.tarjetas.demo.entity.Card;
 
 public class CardMapper {
-    public static CardDto toDto(Card card){
-        return new CardDto(card.getId(), card.getCardNumber(), card.getHolderName(), card.getIssuedAt(), card.getExpiresAt(), card.getStatus(), card.getBlockedAt(),card.getBlockedReason(), card.getBalance(), card.getCurrency());
+    public static CardDtoCreacion toDtoCreacion(Card card){
+        return new CardDtoCreacion(card.getId(), card.getCardNumber(), card.getHolderName(), card.getExpiresAt(), card.getBalance(), card.getCurrency());
 
     }
+    public static CardDtoActivate toDtoActivacion(Card card){
+        return new CardDtoActivate(card.getId(),card.getStatus());
+    }
+    public static CardDtoBlock toDtoBlock(Card card){
+        return new CardDtoBlock(card.getId(),card.getStatus());
+    }
 
-    public static Card toEntity(CardDto dto){
+    public static CardDtoGet toDtoGet(Card card){
+        return new CardDtoGet(card.getId(), card.getCardNumber(), card.getHolderName(),card.getStatus(),card.getBlockedAt(),card.getBlockedReason(), card.getExpiresAt(), card.getBalance(), card.getCurrency());
+    }
+    public static Card toEntity(CardDtoCreacion dto){
         Card card = new Card();
         card.setId(dto.getId());
         card.setCardNumber(dto.getCardNumber());
-        card.setHolderName(dto.getHolderName());
-        card.setIssuedAt(dto.getIssuedAt());
         card.setExpiresAt(dto.getExpiresAt());
-        card.setStatus(dto.getStatus());
-        card.setBlockedAt(dto.getBlockedAt());
-        card.setBlockedReason(dto.getBlockedReason());
         card.setBalance(dto.getBalance());
         card.setCurrency(dto.getCurrency());
         return card;
